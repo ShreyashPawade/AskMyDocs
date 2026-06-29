@@ -10,7 +10,7 @@ from config import API_ENDPOINTS, DISPLAY_STRINGS
 from utils.helpers import log_error
 
 # Request timeout (seconds)
-REQUEST_TIMEOUT = 30
+REQUEST_TIMEOUT = 180
 STREAM_TIMEOUT = 60
 
 
