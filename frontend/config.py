@@ -11,7 +11,7 @@ from typing import Dict, Any
 # ============================================================================
 
 # Backend API base URL - can be set via environment variable
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "askmydocs-production-0b5f.up.railway.app")
 
 # API Endpoints
 API_ENDPOINTS = {
