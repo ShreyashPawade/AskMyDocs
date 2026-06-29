@@ -8,8 +8,7 @@
 
 **Frontend:** *(Coming Soon)*
 
-**Backend API:** askmydocs-production-0b5f.up.railway.app
-
+**Backend API:** [Live API](https://askmydocs-production-0b5f.up.railway.app)
 ---
 
 ## ✨ Features
