@@ -15,33 +15,73 @@ STOP_WORDS = set(
     stopwords.words("english")
 )
 
-client = chromadb.PersistentClient(
-    path="./chroma_db"
-)
 
-collection = client.get_collection(
-    "knowledge_base"
-)
 
-embedding_model = SentenceTransformer(
-    "all-MiniLM-L6-v2"
-)
 
-reranker=CrossEncoder(
-        "cross-encoder/ms-marco-MiniLM-L-6-v2"
-)
+embedding_model = None
+reranker = None
+
+
+def get_embedding_model():
+    global embedding_model
+
+    if embedding_model is None:
+        print("Loading embedding model...")
+        embedding_model = SentenceTransformer(
+            "all-MiniLM-L6-v2"
+        )
+
+    return embedding_model
+
+
+def get_reranker():
+    global reranker
+
+    if reranker is None:
+        print("Loading reranker...")
+        reranker = CrossEncoder(
+            "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        )
+
+    return reranker
+
+
+
+client = None
+collection = None
+
+def get_collection():
+
+    global client
+    global collection
+
+    if collection is None:
+
+        client = chromadb.PersistentClient(
+            path="./chroma_db"
+        )
+
+        collection = client.get_collection(
+            "knowledge_base"
+        )
+
+    return collection
 
 
 def chroma_search(
     question,
     k
 ):
+    
+    model=get_embedding_model()
 
     query_embedding = (
-        embedding_model.encode(
+        model.encode(
             question
         )
     )
+    
+    collection=get_collection()
 
     results = collection.query(
         query_embeddings=[
@@ -153,10 +193,15 @@ def reload_bm25():
 
 
 
-load_bm25()      
+
 
 
 def bm25_search(question, k):
+    
+    global bm25
+    
+    if bm25 is None:
+        load_bm25()
 
     query_tokens = preprocess(question)
 
@@ -212,7 +257,7 @@ def hybrid_search(question,k=20):
         )
         candidate_ids.append(chunk_id)
         
-    
+    reranker=get_reranker()
     scores= reranker.predict(pairs)
     
     reranked=list(zip(candidate_ids,scores))
